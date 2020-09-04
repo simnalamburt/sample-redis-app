@@ -15,4 +15,12 @@ FLASK_ENV=development flask run
 flask run
 ```
 
+### Docker
+Hosted in [GitHub Package Registry]
+
+```bash
+docker build . -t ghcr.io/simnalamburt/sample-redis-app
+```
+
 [Nomad]: https://www.nomadproject.io/
+[GitHub Package Registry]: https://github.com/users/simnalamburt/packages/container/sample-redis-app
