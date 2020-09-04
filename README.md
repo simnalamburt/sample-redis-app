@@ -1,4 +1,4 @@
-redis-sample-app
+sample-redis-app
 ========
 Sample web server using Redis to test [Nomad]
 
