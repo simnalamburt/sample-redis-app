@@ -8,6 +8,10 @@ python3 -m venv .venv
 pip install -U pip setuptools
 pip install -r requirements.txt
 
+# development mode
+FLASK_ENV=development flask run
+
+# production mode
 flask run
 ```
 
