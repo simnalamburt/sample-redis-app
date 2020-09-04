@@ -19,7 +19,7 @@ flask run
 Hosted in [GitHub Package Registry]
 
 ```bash
-docker run -it -p 5000:5000 ghcr.io/simnalamburt/sample-redis-app:1.0.0
+docker run -it -p 5000:5000 ghcr.io/simnalamburt/sample-redis-app:1.0.1
 ```
 
 [Nomad]: https://www.nomadproject.io/
