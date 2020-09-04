@@ -22,7 +22,8 @@
 
   h1 { grid-area: title; }
   p { grid-area: desc; }
-  span[data-loading] { color: gray; }
+  span[data-status=loading] { color: gray; }
+  span[data-status=errored] { color: red; }
 
   button {
     place-self: center;
@@ -32,9 +33,9 @@
     padding: 0.25em 0.5em;
     border-radius: 0.25em;
     border: none;
-    cursor: pointer;
   }
-  button:hover { background: darkgray; }
+  button:not([disabled]) { cursor: pointer; }
+  button:not([disabled]):hover { background: darkgray; }
   </style>
 </head>
 <body>
@@ -42,38 +43,40 @@
   import { html, render, useState, useEffect } from 'https://unpkg.com/htm/preact/standalone.module.js';
 
   function App(props) {
-    const [loading, setLoading] = useState(true)
-    const [counter, setCounter] = useState()
+    const [state, setState] = useState({
+      status: 'loading', // 'loading' | 'done' | 'errored'
+      counter: undefined, // undefined | number
+    })
 
     useEffect(async () => {
-      // TODO: handle rejected promise
-      const resp = await fetch('/counter')
-
-      // TODO: handle error
-      if (!resp.ok) { return }
-
-      // TODO: handle rejected promise
-      const result = await resp.json()
-
-      setLoading(false)
-      setCounter(result)
+      try {
+        const resp = await fetch('/counter')
+        if (!resp.ok) { throw Error() }
+        const result = await resp.json()
+        setState({ status: 'done', counter: result })
+      } catch(e) {
+        setState({ status: 'errored', counter: undefined })
+      }
     }, [])
 
-    const update = async (newCounter) => {
-      setLoading(true)
-      setCounter(newCounter)
+    const update = async (counter) => {
+      // Do nothing on errored
+      if (state.status === 'errored') { return }
 
-      // TODO: handle rejected promise
-      const resp = await fetch('/counter', {
+      setState({ status: 'loading', counter })
+      const opt = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newCounter),
-      })
+        body: JSON.stringify(counter),
+      }
 
-      // TODO: handle error
-      if (!resp.ok) { return }
-
-      setLoading(false)
+      try {
+        const resp = await fetch('/counter', opt)
+        if (!resp.ok) { throw Error() }
+        setState({ status: 'done', counter })
+      } catch(e) {
+        setState({ status: 'errored', counter: undefined })
+      }
     }
 
     return html`
@@ -82,9 +85,23 @@
         Sample web server using Redis
         to test <a href="https://www.nomadproject.io/">Nomad</a>
       </p>
-      <button onClick=${() => update(counter - 1)}>-1</button>
-      <span data-loading=${loading}>${counter ?? 'Loading ...'}</span>
-      <button onClick=${() => update(counter + 1)}>1</button>
+      <button
+        disabled=${state.status === 'errored'}
+        onClick=${() => update(state.counter - 1)}
+      >
+        -1
+      </button>
+      <span data-status=${state.status}>
+        ${state.counter ?? (
+          state.status == 'loading' ? 'Loading ...' : 'Errored'
+        )}
+      </span>
+      <button
+        disabled=${state.status === 'errored'}
+        onClick=${() => update(state.counter + 1)}
+      >
+        +1
+      </button>
     `
   }
 
