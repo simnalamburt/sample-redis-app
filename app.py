@@ -1,8 +1,8 @@
+from redis import Redis
 from flask import Flask, render_template, request, jsonify
 
+db = Redis(port=29597)
 app = Flask(__name__)
-
-COUNTER = 0
 
 @app.route('/')
 def index():
@@ -10,9 +10,13 @@ def index():
 
 @app.route('/counter', methods = ['GET', 'PUT'])
 def get():
-    global COUNTER
     if request.method == 'GET':
-        return jsonify(COUNTER)
+        counter = db.get('counter')
+        if counter is None:
+            counter = b'0'
+        return jsonify(int(counter))
+
     elif request.method == 'PUT':
-        COUNTER = request.get_json()
+        counter = request.get_json()
+        db.set('counter', counter)
         return '', 204
