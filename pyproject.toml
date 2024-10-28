@@ -1,0 +1,10 @@
+[project]
+name = "sample-redis-app"
+version = "1.0.1"
+description = "Sample web server using Redis"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.0.3",
+    "redis>=5.2.0",
+]
