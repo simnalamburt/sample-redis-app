@@ -1,7 +1,7 @@
-from redis import Redis
+from valkey import Valkey
 from flask import Flask, render_template, request, jsonify
 
-db = Redis(port=29597)
+db = Valkey(port=29597)
 app = Flask(__name__)
 
 @app.route('/')

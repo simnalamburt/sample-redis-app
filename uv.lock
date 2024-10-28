@@ -97,27 +97,27 @@ wheels = [
 ]
 
 [[package]]
-name = "redis"
-version = "5.2.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/53/17/2f4a87ffa4cd93714cf52edfa3ea94589e9de65f71e9f99cbcfa84347a53/redis-5.2.0.tar.gz", hash = "sha256:0b1087665a771b1ff2e003aa5bdd354f15a70c9e25d5a7dbf9c722c16528a7b0", size = 4607878 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/12/f5/ffa560ecc4bafbf25f7961c3d6f50d627a90186352e27e7d0ba5b1f6d87d/redis-5.2.0-py3-none-any.whl", hash = "sha256:ae174f2bb3b1bf2b09d54bf3e51fbc1469cf6c10aa03e21141f51969801a7897", size = 261428 },
-]
-
-[[package]]
-name = "sample-redis-app"
+name = "sample-valkey-app"
 version = "1.0.1"
 source = { virtual = "." }
 dependencies = [
     { name = "flask" },
-    { name = "redis" },
+    { name = "valkey" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "flask", specifier = ">=3.0.3" },
-    { name = "redis", specifier = ">=5.2.0" },
+    { name = "valkey", specifier = ">=6.0.2" },
+]
+
+[[package]]
+name = "valkey"
+version = "6.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/f7/b552b7a67017e6233cd8a3b783ce8c4b548e29df98daedd7fb4c4c2cc8f8/valkey-6.0.2.tar.gz", hash = "sha256:dc2e91512b82d1da0b91ab0cdbd8c97c0c0250281728cb32f9398760df9caeae", size = 4602149 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/cb/b1eac0fe9cbdbba0a5cf189f5778fe54ba7d7c9f26c2f62ca8d759b38f52/valkey-6.0.2-py3-none-any.whl", hash = "sha256:dbbdd65439ee0dc5689502c54f1899504cc7268e85cb7fe8935f062178ff5805", size = 260101 },
 ]
 
 [[package]]

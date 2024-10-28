@@ -1,6 +1,6 @@
-sample-redis-app
+sample-valkey-app
 ========
-Sample web server using Redis (or Valkey). This sample app was originally
+Sample web server using Valkey (or Redis). This sample app was originally
 created to test if the network configuration between servers in [Nomad] is
 functioning correctly.
 
@@ -10,4 +10,4 @@ functioning correctly.
 uv run flask run
 ```
 
-![Screenshot](https://raw.githubusercontent.com/simnalamburt/i/master/sample-redis-app/screenshot.png)
+![Screenshot](https://i.hyeon.me/sample-valkey-app/screenshot.png)
