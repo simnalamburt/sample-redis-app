@@ -1,112 +1,107 @@
 <!doctype html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Hello, world!</title>
-  <style>
-  body {
-    margin: 0;
-    display: grid;
-    grid:
-      'title title title' auto
-      'desc desc desc' auto
-      '. . .' auto /
-      auto 300px auto;
+<meta charset="UTF-8">
+<title>Hello, world!</title>
+<style>
+body {
+  margin: 0;
+  display: grid;
+  grid:
+    'title title title' auto
+    'desc desc desc' auto
+    '. . .' auto /
+    auto 300px auto;
 
-    place-items: center;
-    place-content: center;
-    min-height: 100vh;
+  place-items: center;
+  place-content: center;
+  min-height: 100vh;
 
-    font-size: 1.5rem;
-    font-family: sans-serif;
-  }
+  font-size: 1.5rem;
+  font-family: sans-serif;
+}
 
-  h1 { grid-area: title; }
-  p { grid-area: desc; }
-  span[data-status=loading] { color: gray; }
-  span[data-status=errored] { color: red; }
+h1 { grid-area: title; }
+p { grid-area: desc; }
+span[data-status=loading] { color: gray; }
+span[data-status=errored] { color: red; }
 
-  button {
-    place-self: center;
+button {
+  place-self: center;
 
-    font-size: inherit;
-    margin: 0 0.5em;
-    padding: 0.25em 0.5em;
-    border-radius: 0.25em;
-    border: none;
-  }
-  button:not([disabled]) { cursor: pointer; }
-  button:not([disabled]):hover { background: darkgray; }
-  </style>
-</head>
-<body>
-  <script type=module>
-  import { html, render, useState, useEffect } from 'https://unpkg.com/htm/preact/standalone.module.js';
+  font-size: inherit;
+  margin: 0 0.5em;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  border: none;
+}
+button:not([disabled]) { cursor: pointer; }
+button:not([disabled]):hover { background: darkgray; }
+</style>
 
-  function App(props) {
-    const [state, setState] = useState({
-      status: 'loading', // 'loading' | 'done' | 'errored'
-      counter: undefined, // undefined | number
-    })
+<script type=module>
+import { html, render, useState, useEffect } from 'https://unpkg.com/htm/preact/standalone.module.js';
 
-    useEffect(async () => {
-      try {
-        const resp = await fetch('/counter')
-        if (!resp.ok) { throw Error() }
-        const result = await resp.json()
-        setState({ status: 'done', counter: result })
-      } catch(e) {
-        setState({ status: 'errored', counter: undefined })
-      }
-    }, [])
+function App(props) {
+  const [state, setState] = useState({
+    status: 'loading', // 'loading' | 'done' | 'errored'
+    counter: undefined, // undefined | number
+  })
 
-    const update = async (counter) => {
-      // Do nothing on errored
-      if (state.status === 'errored') { return }
+  useEffect(async () => {
+    try {
+      const resp = await fetch('/counter')
+      if (!resp.ok) { throw Error() }
+      const result = await resp.json()
+      setState({ status: 'done', counter: result })
+    } catch(e) {
+      setState({ status: 'errored', counter: undefined })
+    }
+  }, [])
 
-      setState({ status: 'loading', counter })
-      const opt = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(counter),
-      }
+  const update = async (counter) => {
+    // Do nothing on errored
+    if (state.status === 'errored') { return }
 
-      try {
-        const resp = await fetch('/counter', opt)
-        if (!resp.ok) { throw Error() }
-        setState({ status: 'done', counter })
-      } catch(e) {
-        setState({ status: 'errored', counter: undefined })
-      }
+    setState({ status: 'loading', counter })
+    const opt = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(counter),
     }
 
-    return html`
-      <h1>Hello, world!</h1>
-      <p>
-        Sample web server using Redis
-        to test <a href="https://www.nomadproject.io/">Nomad</a>
-      </p>
-      <button
-        disabled=${state.status === 'errored'}
-        onClick=${() => update(state.counter - 1)}
-      >
-        -1
-      </button>
-      <span data-status=${state.status}>
-        ${state.counter ?? (
-          state.status == 'loading' ? 'Loading ...' : 'Errored'
-        )}
-      </span>
-      <button
-        disabled=${state.status === 'errored'}
-        onClick=${() => update(state.counter + 1)}
-      >
-        +1
-      </button>
-    `
+    try {
+      const resp = await fetch('/counter', opt)
+      if (!resp.ok) { throw Error() }
+      setState({ status: 'done', counter })
+    } catch(e) {
+      setState({ status: 'errored', counter: undefined })
+    }
   }
 
-  render(html`<${App} />`, document.body)
-  </script>
-</body>
-</html>
+  return html`
+    <h1>Hello, world!</h1>
+    <p>
+      Sample web server using Redis
+      to test <a href="https://www.nomadproject.io/">Nomad</a>
+    </p>
+    <button
+      disabled=${state.status === 'errored'}
+      onClick=${() => update(state.counter - 1)}
+    >
+      -1
+    </button>
+    <span data-status=${state.status}>
+      ${state.counter ?? (
+        state.status == 'loading' ? 'Loading ...' : 'Errored'
+      )}
+    </span>
+    <button
+      disabled=${state.status === 'errored'}
+      onClick=${() => update(state.counter + 1)}
+    >
+      +1
+    </button>
+  `
+}
+
+render(html`<${App} />`, document.body)
+</script>
